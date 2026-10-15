@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#101710"><meta name="description" content="霓虹贪吃蛇：支持电脑与手机的免费网页小游戏。"><title>贪吃蛇 · NEON SNAKE</title><link rel="stylesheet" href="./styles.css"></head>
+<body>
+<header><a class="brand" href="./"><span class="brand-icon">▰</span> ARCADE<span class="muted"> / 01</span></a><span class="header-note"><i></i> 随时来一局</span></header>
+<main>
+<section class="intro"><p class="eyebrow">THE CLASSICS, REIMAGINED</p><h1>贪吃蛇<span class="title-dot">.</span></h1><p class="subtitle">一点专注，一点手速。看看你能走多远。</p></section>
+<div class="game-layout">
+<section class="game-panel" aria-label="游戏区域">
+<div class="board-top"><span><i></i> <span id="status" role="status">准备就绪</span></span><span class="board-label">NEON SNAKE</span></div>
+<div class="board-wrap"><canvas id="board" width="600" height="600" aria-label="贪吃蛇游戏棋盘"></canvas><div id="overlay" class="overlay"><span class="overlay-icon">↗</span><h2 id="overlay-title">准备好出发了吗？</h2><p id="overlay-copy">吃掉光点，让自己变得更长。</p><button id="start">开始游戏 <span>↗</span></button><small>方向键 / WASD · 手机滑动操作</small></div></div>
+<div class="board-bottom"><span>20 × 20 GRID</span><span>保持前进，别回头 <span class="lime">↗</span></span></div>
+</section>
+<aside>
+<div class="score-card"><p class="eyebrow">YOUR SCORE</p><div id="score" class="score">0</div><div class="best-row"><span>♔ 本机最高分</span><strong id="best">0</strong></div></div>
+<div class="controls-card"><div class="section-title"><span>游戏控制</span><span class="muted">01 — 03</span></div><button id="pause" class="secondary" disabled>暂停游戏 <kbd>SPACE</kbd></button><button id="restart" class="secondary">重新开始 <span>↻</span></button><div class="direction-pad" aria-label="方向控制"><button data-dir="up" aria-label="向上">↑</button><div><button data-dir="left" aria-label="向左">←</button><button data-dir="down" aria-label="向下">↓</button><button data-dir="right" aria-label="向右">→</button></div></div><p class="control-hint">方向键 / WASD 控制方向<br>空格暂停 · 手机也能玩</p></div>
+<div class="howto"><span class="tip-icon">✳</span><div><h3>小提示</h3><p>每个光点 +10 分。<br>撞到边界或自己，本局就结束啦。</p></div></div>
+</aside>
+</div>
+<footer><span>简单的规则，无限的挑战。</span><span>BUILT FOR A LITTLE BREAK <span class="lime">✳</span></span></footer>
+</main><script type="module" src="./app.js"></script>
+</body></html>
