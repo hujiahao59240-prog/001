@@ -35,3 +35,9 @@ PLAYWRIGHT_MODULE=/tmp/snake-browser/node_modules/playwright/index.mjs PLAYWRIGH
 GitHub Pages：仓库 Settings → Pages → Build and deployment，选择 Deploy from a branch、`gh-pages` 分支、`/ (root)`，保存。首次部署需等待构建完成；以 Pages 设置页显示的网站地址为准。
 
 本地规则测试与浏览器验收通过不代表公网部署完成。只有线上页面及资源经过实际访问确认后才能视为上线成功。
+
+## 当前交付状态
+
+游戏地址：https://hujiahao59240-prog.github.io/001/
+
+12 项规则测试及桌面/手机浏览器验收通过。GitHub Pages 部署任务 [38726550647](https://github.com/hujiahao59240-prog/001/actions/runs/38726550647) 已成功，游戏版本为 `4f43a16`。当前开发环境的网络代理拒绝直接访问该站点，因此公网页面尚未从此环境完成直接验收。
