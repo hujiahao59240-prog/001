@@ -1,0 +1,1 @@
+{"name":"neon-snake","private":true,"type":"module","scripts":{"test":"node --test tests/game.test.mjs","start":"python -m http.server 8000"}}

@@ -1,0 +1,13 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createGame,turn,step} from '../game.js';
+const running=()=>({...createGame(()=>0),status:'running'});
+test('initial state: three cells, right, ready, food empty',()=>{const s=createGame(()=>0);assert.equal(s.snake.length,3);assert.equal(s.direction,'right');assert.equal(s.status,'ready');assert.ok(!s.snake.some(p=>p.x===s.food.x&&p.y===s.food.y));});
+test('moves one cell without growth',()=>{const s=running(), n=step(s);assert.equal(n.snake[0].x,s.snake[0].x+1);assert.equal(n.snake.length,3);assert.equal(n.score,0);});
+test('eating grows and adds ten, respawns in empty cell',()=>{const s=running();s.food={x:s.snake[0].x+1,y:s.snake[0].y};const n=step(s,()=>0);assert.equal(n.score,10);assert.equal(n.snake.length,4);assert.ok(!n.snake.some(p=>p.x===n.food.x&&p.y===n.food.y));});
+test('reverse and second turn within tick ignored',()=>{let s=running();s=turn(s,'left');assert.equal(s.pendingDirection,null);s=turn(s,'up');s=turn(s,'left');assert.equal(s.pendingDirection,'up');s=step(s);assert.equal(s.direction,'up');assert.equal(s.pendingDirection,null);assert.equal(turn(s,'left').pendingDirection,'left');});
+test('wall ends game',()=>{const s=running();s.snake=[{x:19,y:10},{x:18,y:10},{x:17,y:10}];assert.equal(step(s).status,'over');});
+test('body ends game',()=>{const s=running();s.snake=[{x:3,y:3},{x:3,y:4},{x:4,y:4},{x:4,y:3},{x:4,y:2}];assert.equal(step(s).status,'over');});
+test('enter vacated tail is legal',()=>{const s=running();s.snake=[{x:3,y:3},{x:3,y:4},{x:4,y:4},{x:4,y:3}];assert.equal(step(s).status,'running');});
+test('full board wins without food generation loop',()=>{const s=running();s.snake=[{x:0,y:0}];for(let y=0;y<20;y++)for(let x=0;x<20;x++)if(!(y===0&&(x===0||x===1)))s.snake.push({x,y});s.food={x:1,y:0};const n=step(s);assert.equal(n.status,'won');assert.equal(n.food,null);assert.equal(n.snake.length,400);});
+for(const status of ['ready','paused','over','won'])test(`${status} does not move`,()=>{const s={...running(),status};assert.deepEqual(step(s),s);});
