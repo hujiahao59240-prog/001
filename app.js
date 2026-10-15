@@ -32,7 +32,7 @@ function restart(){stop();state=createGame();run();}
 $('start').addEventListener('click',()=>{if(state.status==='paused'||state.status==='ready')run();else restart();});
 $('restart').addEventListener('click',restart);$('pause').addEventListener('click',pause);
 const keys={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',w:'up',s:'down',a:'left',d:'right'};
-document.addEventListener('keydown',event=>{if(event.altKey||event.ctrlKey||event.metaKey)return;const direction=keys[event.key]||keys[event.key.toLowerCase()];if(direction){event.preventDefault();state=turn(state,direction);}else if(event.code==='Space'&&event.target.tagName!=='BUTTON'){event.preventDefault();if(!event.repeat)pause();}});
+document.addEventListener('keydown',event=>{if(event.altKey||event.ctrlKey||event.metaKey)return;const direction=keys[event.key]||keys[event.key.toLowerCase()];if(direction){event.preventDefault();state=turn(state,direction);}else if(event.code==='Space'){event.preventDefault();if(event.repeat)return;if(state.status==='running'||state.status==='paused')pause();else if(event.target.tagName==='BUTTON')event.target.click();}});
 for(const button of document.querySelectorAll('[data-dir]'))button.addEventListener('click',()=>{state=turn(state,button.dataset.dir);});
 canvas.addEventListener('pointerdown',e=>{pointer={x:e.clientX,y:e.clientY,id:e.pointerId};try{canvas.setPointerCapture(e.pointerId);}catch{}});
 canvas.addEventListener('pointerup',e=>{if(!pointer||pointer.id!==e.pointerId)return;const dx=e.clientX-pointer.x,dy=e.clientY-pointer.y;pointer=null;if(Math.max(Math.abs(dx),Math.abs(dy))<15)return;state=turn(state,Math.abs(dx)>Math.abs(dy)?dx>0?'right':'left':dy>0?'down':'up');});

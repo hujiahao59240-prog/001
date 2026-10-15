@@ -4,6 +4,7 @@ const {chromium}=await import(process.env.PLAYWRIGHT_MODULE||'playwright');
 const browser=await chromium.launch({headless:true, executablePath:process.env.CHROMIUM_PATH, args:process.env.CHROMIUM_PATH?['--no-sandbox','--disable-dev-shm-usage','--single-process']:[]});
 const page=await browser.newPage({viewport:{width:1200,height:900}});
 page.setDefaultTimeout(5000);
+const failures=[];
 const errors=[];page.on('pageerror',e=>errors.push(e.message));
 await page.clock.install();
 await page.addInitScript(()=>{Math.random=()=>206.1/397;});
@@ -22,6 +23,7 @@ try {
  await page.keyboard.press('a');await page.clock.runFor(140);assert.deepEqual(await head(),{x:9,y:9});
  await page.keyboard.press('Space');assert.equal(await page.locator('#status').innerText(),'已暂停');await page.keyboard.press('Space');assert.equal(await page.locator('#status').innerText(),'游戏中');
  await page.locator('#restart').click();await page.locator('#restart').click();assert.equal(await page.locator('#score').innerText(),'0');await page.clock.runFor(140);assert.deepEqual(await head(),{x:9,y:10});
+ await page.keyboard.press('Space');if(await page.locator('#status').innerText()!=='已暂停')failures.push('Space must pause after restart button focus');else await page.keyboard.press('Space');
  await page.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,value:true});document.dispatchEvent(new Event('visibilitychange'));});
  assert.equal(await page.locator('#status').innerText(),'已暂停');
  await page.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,value:false});document.dispatchEvent(new Event('visibilitychange'));});
@@ -29,10 +31,11 @@ try {
  await page.screenshot({path:'/tmp/snake-desktop.png',fullPage:true});
  await page.reload();assert.equal(await page.locator('#best').innerText(),'10');
  await page.setViewportSize({width:320,height:800});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+ const rows=await page.locator('[data-dir]').evaluateAll(bs=>Object.fromEntries(bs.map(b=>[b.dataset.dir,b.getBoundingClientRect().top])));if(!(rows.left===rows.down&&rows.down===rows.right))failures.push('Mobile left/down/right controls must share one row');
  await page.locator('#start').click();await page.getByRole('button',{name:'向上',exact:true}).click();await page.clock.runFor(140);assert.deepEqual(await head(),{x:8,y:9});
  await canvas.dispatchEvent('pointerdown',{clientX:100,clientY:100,pointerId:1});await canvas.dispatchEvent('pointerup',{clientX:40,clientY:100,pointerId:1});await page.clock.runFor(140);assert.deepEqual(await head(),{x:7,y:9});
  await page.locator('#pause').click();await page.screenshot({path:'/tmp/snake-mobile.png',fullPage:true});
  await page.addInitScript(()=>{Object.defineProperty(window,'localStorage',{get(){throw Error('storage blocked');}});});
  await page.reload();await page.locator('#start').click();await page.clock.runFor(140);assert.equal(await page.locator('#status').innerText(),'游戏中');assert.equal(await page.locator('#score').innerText(),'10');
- assert.deepEqual(errors,[]);console.log('PASS: movement, scoring, pause/resume, keyboard, restart timer, background, persistence, blocked storage, 320px layout, direction buttons, swipe');
+ assert.deepEqual(errors,[]);assert.deepEqual(failures,[]);console.log('PASS: movement, scoring, pause/resume, keyboard, restart timer, background, persistence, blocked storage, 320px layout, direction buttons, swipe');
 } finally {await browser.close();}
